@@ -1,69 +1,55 @@
-import Image from "next/image";
+import Link from "next/link"
+import { getAllPostsMeta } from "@/lib/posts"
 
 export default function Home() {
+  const posts = getAllPostsMeta()
+  const categories = Array.from(new Set(posts.map((p) => p.category)))
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="mx-auto max-w-3xl px-5 py-10">
+      <section className="mb-10 rounded-xl border border-neutral-200 bg-white p-6 sm:p-8">
+        <h1 className="mb-3 text-xl font-bold text-neutral-900 sm:text-2xl">
+          仮面ライダー・ウルトラマン・戦隊、今どこで見れる？を最短で解決
+        </h1>
+        <p className="text-sm leading-relaxed text-neutral-600">
+          作品ごとに配信サービスを比較し、無料期間・料金・過去作の網羅度まで具体的に案内するガイドサイトです。
+          「結局どれに入ればいいか」を、記事の冒頭で先に結論として提示します。
+        </p>
+      </section>
+
+      {categories.length === 0 ? (
+        <p className="text-sm text-neutral-400">記事を準備中です。</p>
+      ) : (
+        categories.map((category) => (
+          <section key={category} className="mb-10">
+            <h2 className="mb-4 border-b border-neutral-200 pb-2 text-base font-bold text-neutral-800">
+              {category}
+            </h2>
+            <div className="flex flex-col gap-3">
+              {posts
+                .filter((p) => p.category === category)
+                .map((post) => (
+                  <Link
+                    key={post.slug}
+                    href={`/${post.slug}`}
+                    className="rounded-lg border border-neutral-200 bg-white p-4 transition hover:border-rose-300 hover:bg-rose-50/40"
+                  >
+                    <p className="text-[15px] font-semibold text-neutral-900">{post.title}</p>
+                    <p className="mt-1 text-xs text-neutral-400">更新日：{post.updatedAt}</p>
+                  </Link>
+                ))}
+            </div>
+          </section>
+        ))
+      )}
+
+      <section className="mt-12 rounded-xl border border-neutral-200 bg-neutral-100 p-6 text-xs leading-relaxed text-neutral-500">
+        <p className="mb-2 font-bold text-neutral-700">このサイトについて</p>
+        <p>
+          特撮配信ナビは、各動画配信サービスの公式サイト・アプリで実際に作品の配信状況を確認したうえで記事を作成しています。
+          料金・配信作品はサービス側の都合で変更されることがあるため、最終的な申込み判断は必ず公式サイトの表示でご確認ください。
+        </p>
+      </section>
     </div>
-  );
+  )
 }
