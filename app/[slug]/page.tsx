@@ -6,6 +6,7 @@ import { PRBadge } from "@/components/PRBadge"
 import { ComparisonTable } from "@/components/ComparisonTable"
 import { FAQSection } from "@/components/FAQSection"
 import { CTAButton } from "@/components/CTAButton"
+import { resolveAffiliateUrl } from "@/lib/affiliate-links"
 
 export async function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }))
@@ -89,7 +90,11 @@ export default async function ArticlePage({
           <p className="mb-4 text-sm font-semibold text-neutral-700">
             まとめると、まず試すなら「{topPick.name}」が一番失敗が少ない選択です。
           </p>
-          <CTAButton href={topPick.affiliateUrl} label={`${topPick.name}の無料体験を見る`} sublabel={topPick.name} />
+          <CTAButton
+            href={resolveAffiliateUrl(topPick.name, topPick.affiliateUrl)}
+            label={`${topPick.name}の無料体験を見る`}
+            sublabel={topPick.name}
+          />
         </div>
       )}
 

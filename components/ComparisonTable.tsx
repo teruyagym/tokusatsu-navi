@@ -1,4 +1,5 @@
 import type { ServiceEntry } from "@/lib/types"
+import { resolveAffiliateUrl } from "@/lib/affiliate-links"
 import { CTAButton } from "./CTAButton"
 
 export function ComparisonTable({ services }: { services: ServiceEntry[] }) {
@@ -51,7 +52,11 @@ export function ComparisonTable({ services }: { services: ServiceEntry[] }) {
             <p className="mt-3 text-[13px] leading-relaxed text-neutral-600">{s.recommendReason}</p>
 
             <div className="mt-4">
-              <CTAButton href={s.affiliateUrl} label={`${s.name}を無料で試す`} sublabel={s.name} />
+              <CTAButton
+                href={resolveAffiliateUrl(s.name, s.affiliateUrl)}
+                label={`${s.name}を無料で試す`}
+                sublabel={s.name}
+              />
             </div>
           </div>
         ))}
