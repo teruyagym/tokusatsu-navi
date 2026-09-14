@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getAllSlugs, getPostBySlug } from "@/lib/posts"
+import { getAllSlugs, getPostBySlug, getRelatedPosts } from "@/lib/posts"
 import { PRBadge } from "@/components/PRBadge"
 import { ComparisonTable } from "@/components/ComparisonTable"
 import { FAQSection } from "@/components/FAQSection"
 import { CTAButton } from "@/components/CTAButton"
+import { RelatedArticles } from "@/components/RelatedArticles"
 import { resolveAffiliateUrl } from "@/lib/affiliate-links"
 
 export async function generateStaticParams() {
@@ -43,6 +44,7 @@ export default async function ArticlePage({
   if (!getAllSlugs().includes(slug)) notFound()
   const post = await getPostBySlug(slug)
   const topPick = [...post.services].sort((a, b) => a.rank - b.rank)[0]
+  const relatedPosts = getRelatedPosts(post.slug, post.category)
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -97,6 +99,8 @@ export default async function ArticlePage({
           />
         </div>
       )}
+
+      <RelatedArticles posts={relatedPosts} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </article>

@@ -41,3 +41,10 @@ export function getAllPostsMeta(): PostFrontmatter[] {
     })
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
 }
+
+export function getRelatedPosts(currentSlug: string, category: string, limit = 3): PostFrontmatter[] {
+  const others = getAllPostsMeta().filter((p) => p.slug !== currentSlug)
+  const sameCategory = others.filter((p) => p.category === category)
+  const rest = others.filter((p) => p.category !== category)
+  return [...sameCategory, ...rest].slice(0, limit)
+}
