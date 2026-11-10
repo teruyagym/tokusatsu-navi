@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { getAllPostsMeta } from "@/lib/posts"
+import { getCategorySlug } from "@/lib/categories"
 
 export default function Home() {
   const posts = getAllPostsMeta()
@@ -22,8 +23,16 @@ export default function Home() {
       ) : (
         categories.map((category) => (
           <section key={category} className="mb-10">
-            <h2 className="mb-4 border-b border-neutral-200 pb-2 text-base font-bold text-neutral-800">
-              {category}
+            <h2 className="mb-4 flex items-baseline justify-between border-b border-neutral-200 pb-2 text-base font-bold text-neutral-800">
+              <span>{category}</span>
+              {getCategorySlug(category) && (
+                <Link
+                  href={`/series/${getCategorySlug(category)}`}
+                  className="text-xs font-normal text-rose-600 hover:underline"
+                >
+                  {category}の配信一覧へ
+                </Link>
+              )}
             </h2>
             <div className="flex flex-col gap-3">
               {posts

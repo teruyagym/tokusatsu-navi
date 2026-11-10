@@ -43,8 +43,17 @@ export function getAllPostsMeta(): PostFrontmatter[] {
 }
 
 export function getRelatedPosts(currentSlug: string, category: string, limit = 3): PostFrontmatter[] {
-  const others = getAllPostsMeta().filter((p) => p.slug !== currentSlug)
-  const sameCategory = others.filter((p) => p.category === category)
-  const rest = others.filter((p) => p.category !== category)
-  return [...sameCategory, ...rest].slice(0, limit)
+  // 新しい記事だけにリンクが集まらないよう、同じシリーズ内で公開順が近い記事（前後）を選ぶ
+  const all = getAllPostsMeta()
+  const sameCategory = all.filter((p) => p.category === category)
+  const idx = sameCategory.findIndex((p) => p.slug === currentSlug)
+  const neighbors: PostFrontmatter[] = []
+  for (let step = 1; neighbors.length < limit && step < sameCategory.length; step++) {
+    for (const i of [idx + step, idx - step]) {
+      const n = sameCategory[(i + sameCategory.length) % sameCategory.length]
+      if (n && n.slug !== currentSlug && !neighbors.includes(n) && neighbors.length < limit) neighbors.push(n)
+    }
+  }
+  const rest = all.filter((p) => p.category !== category)
+  return [...neighbors, ...rest].slice(0, limit)
 }

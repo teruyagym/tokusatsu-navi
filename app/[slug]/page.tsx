@@ -8,6 +8,7 @@ import { FAQSection } from "@/components/FAQSection"
 import { CTAButton } from "@/components/CTAButton"
 import { RelatedArticles } from "@/components/RelatedArticles"
 import { resolveAffiliateUrl } from "@/lib/affiliate-links"
+import { getCategorySlug } from "@/lib/categories"
 
 export async function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }))
@@ -45,6 +46,7 @@ export default async function ArticlePage({
   const post = await getPostBySlug(slug)
   const topPick = [...post.services].sort((a, b) => a.rank - b.rank)[0]
   const relatedPosts = getRelatedPosts(post.slug, post.category)
+  const categorySlug = getCategorySlug(post.category)
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -62,7 +64,13 @@ export default async function ArticlePage({
           特撮配信ナビ
         </Link>
         <span className="mx-1.5">/</span>
-        <span>{post.category}</span>
+        {categorySlug ? (
+          <Link href={`/series/${categorySlug}`} className="hover:underline">
+            {post.category}
+          </Link>
+        ) : (
+          <span>{post.category}</span>
+        )}
       </nav>
 
       <h1 className="mb-3 text-[22px] font-bold leading-snug text-neutral-900 sm:text-[26px]">
